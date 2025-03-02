@@ -1,5 +1,4 @@
 ﻿using AmblyopiaSaber.UI;
-using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.MenuButtons;
 using HMUI;
 using System;
@@ -26,15 +25,12 @@ namespace AmblyopiaSaber.Managers
 
         public void Initialize()
         {
-            MenuButtons.instance.RegisterButton(_menuButton);
+            MenuButtons.Instance.RegisterButton(_menuButton);
         }
 
         public void Dispose()
         {
-            if (MenuButtons.IsSingletonAvailable)
-            {
-                MenuButtons.instance.UnregisterButton(_menuButton);
-            }
+            MenuButtons.Instance.UnregisterButton(_menuButton);
         }
 
         private void ShowFlow()
