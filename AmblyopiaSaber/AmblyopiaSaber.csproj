@@ -137,21 +137,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Config\PluginConfig.cs" />
-    <Compile Include="Data\AmblyopiaBurstSliderController.cs" />
-    <Compile Include="Data\AmblyopiaController.cs" />
-    <Compile Include="Data\EyeData.cs" />
-    <Compile Include="Data\NoteEyeData.cs" />
-    <Compile Include="Installers\AmblyopiaSaberCoreInstaller.cs" />
-    <Compile Include="Installers\AmblyopiaSaberMenuInstaller.cs" />
-    <Compile Include="Managers\MenuButtonManager.cs" />
-    <Compile Include="Plugin.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UI\AmblyopiaFlowCoordinator.cs" />
-    <Compile Include="UI\AmblyopiaSettingsView.cs" />
-    <Compile Include="Utils\NoteUtils.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Directory.Build.props" Condition="Exists('Directory.Build.props')" />
     <None Include="Directory.Build.targets" Condition="Exists('Directory.Build.targets')" />
     <None Include="AmblyopiaSaber.csproj.user" Condition="Exists('AmblyopiaSaber.csproj.user')" />
