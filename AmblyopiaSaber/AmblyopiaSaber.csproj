@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AmblyopiaSaber</RootNamespace>
     <AssemblyName>AmblyopiaSaber</AssemblyName>
-    <TargetFrameworkVersion>net48</TargetFrameworkVersion>
+    <TargetFramework>net48</TargetFramework>
     <FileAlignment>512</FileAlignment>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>portable</DebugType>
