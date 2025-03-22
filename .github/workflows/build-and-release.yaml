@@ -1,56 +1,49 @@
-name: Build and Release .NET App
+name: Build
 
 on:
-  push:
-    branches:
-      - master
+    push:
+        branches: [master]
+        tags: v*
+    pull_request:
+        branches: [master]
 
 jobs:
-  build:
-    name: Build and Release
-    runs-on: windows-latest
-
-    steps:
-      - name: Repository Checkout
-        uses: actions/checkout@v3
-
-      - name: Configure .NET SDK
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: 8.0.x
-
-      - name: Restore Dependencies
-        run: dotnet restore
-
-      - name: Build Project
-        run: dotnet build --configuration Release
-
-      - name: Read Version from Project File
-        id: get_version
-        shell: pwsh
-        run: |
-          $version = Select-String -Path AmblyopiaSaber.csproj -Pattern '<Version>(.*?)<\/Version>' | ForEach-Object { $_.Matches.Groups[1].Value }
-          echo "VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Append
-
-      - name: Debug Check Build Output
-        shell: pwsh
-        run: |
-          Write-Host "🔍 Checking built files..."
-          Get-ChildItem -Path bin/Release -Recurse
-
-      - name: Create Release Archive
-        shell: pwsh
-        run: |
-          New-Item -ItemType Directory -Path release -Force
-          Compress-Archive -Path bin/Release/Final/* -DestinationPath release/AmblyopiaSaber-${{ env.VERSION }}.zip -Force
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: v${{ env.VERSION }}
-          name: Release v${{ env.VERSION }}
-          draft: false
-          prerelease: false
-          files: release/AmblyopiaSaber-${{ env.VERSION }}.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    Build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: Setup dotnet
+              uses: actions/setup-dotnet@v3
+              with:
+                  dotnet-version: 7.0.x
+            - name: Initialize modding environment
+              uses: beat-forge/init-beatsaber@v1
+              with:
+                  token: ${{ github.token }}
+                  repo: beat-forge/beatsaber-stripped
+            - name: Download Mod Dependencies
+              uses: Goobwabber/download-beatmods-deps@1.3
+              with:
+                  manifest: ${{ github.workspace }}/AmblyopiaSaber/manifest.json
+            - name: Build
+              id: Build
+              run: dotnet build --configuration Release
+            - name: GitStatus
+              run: git status
+            - name: Echo Filename
+              run: echo $BUILDTEXT \($ASSEMBLYNAME\)
+              env:
+                  BUILDTEXT: Filename=${{ steps.Build.outputs.filename }}
+                  ASSEMBLYNAME: AssemblyName=${{ steps.Build.outputs.assemblyname }}
+            - name: Upload Artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: ${{ steps.Build.outputs.filename }}
+                  path: ${{ steps.Build.outputs.artifactpath }}
+            - name: Release
+              uses: softprops/action-gh-release@v1
+              if: startsWith(github.ref, 'refs/tags/')
+              with:
+                  files: ./${{ steps.Build.outputs.filename }}.zip
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
